@@ -1,14 +1,32 @@
-<app-header title="Registra tu asistencia"></app-header>
+<app-header title="Registro de Asistencia"></app-header>
 
 <ion-content>
 
+  <div class="d-flex-center">
+
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+
+      <app-logo></app-logo>
+
+      <p class="ion-text-center">Para registar tu asistencia escanea el codigo QR</p>
 
 
-  <ion-fab vertical="center" horizontal="center" slot="fixed">
-    <ion-fab-button>
-      <ion-icon name="finger-print-sharp"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+
+      <ion-button (click)="scan()" mode="ios" class="submit" type="submit">
+        ESCANEAR
+        <ion-icon slot="end" name="finger-print-sharp"></ion-icon>
+      </ion-button>
+
+    </form>
+
+  </div>
+
+  <div class="ion-text-center">
+    <ion-button (click)="signOut()"  class="ion-margin">
+      Cerrar Sesión
+      <ion-icon slot="start" name="person"></ion-icon>
+    </ion-button>
+  </div>
+
 
 </ion-content>
-
