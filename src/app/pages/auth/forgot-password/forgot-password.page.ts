@@ -17,7 +17,7 @@ export class ForgotPasswordPage implements OnInit {
 
   })
   firebaseSvc = inject(FirebaseService);
-  utilSvc = inject(UtilsService);
+  utilsSvc = inject(UtilsService);
   
 
   ngOnInit() {
@@ -26,12 +26,12 @@ export class ForgotPasswordPage implements OnInit {
   async submit() {
     if (this.form.valid) {
 
-      const loading = await this.utilSvc.loading();
+      const loading = await this.utilsSvc.loading();
       await loading.present();
 
       this.firebaseSvc.sendRecoveryEmail(this.form.value.email).then(res => {
 
-        this.utilSvc.presentToast({
+        this.utilsSvc.presentToast({
           message: 'Correo enviado con éxito',
           duration: 1500,
           color: 'primary',
@@ -39,13 +39,13 @@ export class ForgotPasswordPage implements OnInit {
           icon: 'mail-outline'
         });
 
-        this.utilSvc.routerLink('/auth');
+        this.utilsSvc.routerLink('/auth');
         this.form.reset();
 
       }).catch(error => {
         console.log(error);
 
-        this.utilSvc.presentToast({
+        this.utilsSvc.presentToast({
           message: error.message,
           duration: 3000,
           color: 'primary',
