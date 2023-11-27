@@ -13,25 +13,46 @@
 
       <p class="ion-text-center">Genera tu codigo QR para que tus alumnos se registren</p>
 
+      <div style="margin-top: 40px;"></div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
 
 
-      <ion-button (click)="scan()" mode="ios" class="submit" type="submit">
-        GENERAR
-        <ion-icon slot="end" name="qr-code-outline"></ion-icon>
+        <!-- Lista desplegable de materias -->
+    
+        <ion-item class="custom-input-box"
+          [class.invalid]="form.controls.materia.invalid && form.controls.materia.touched">
+          <ion-select formControlName="materia" class="custom-select" placeholder="Seleccione una materia"
+            interface="popover">
+            <ion-select-option value="Matemáticas">Matemáticas</ion-select-option>
+            <ion-select-option value="Lenguaje">Lenguaje</ion-select-option>
+            <ion-select-option value="Historia">Historia</ion-select-option>
+            <!-- Agrega más opciones según las materias que desees -->
+          </ion-select>
+        </ion-item>
+ 
+
+        <div style="margin-top: 20px;"></div>
+
+        <!-- Botón para generar el código QR -->
+        <ion-button made="ios" class="submit" type="submit" (click)="generateQRCode()" [disabled]="isGeneratingQR || form.controls.materia.invalid">
+          Generar Código QR</ion-button>
+
+        <!-- Código QR generado -->
+        <div *ngIf="qrCodeData">
+          <img [src]="qrCodeData" alt="Código QR">
+        </div>
+
+      </form>
+
+      <div style="margin-top: 100px;"></div>
+
+      <div style="margin-top: 80px;"></div>
+      <ion-button (click)="signOut()" class="ion-margin">
+        Cerrar Sesión
+        <ion-icon slot="start" name="person"></ion-icon>
       </ion-button>
 
     </form>
-
   </div>
-
-  <div class="ion-text-center">
-    <div style="margin-top: 80px;"></div>
-
-    <ion-button (click)="signOut()"  class="ion-margin">
-      Cerrar Sesión
-      <ion-icon slot="start" name="person"></ion-icon>
-    </ion-button>
-  </div>
-
-
 </ion-content>
