@@ -1,0 +1,30 @@
+/* ver-asistencia.page.scss */
+
+ion-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  ion-grid {
+    width: 80%;
+  }
+  
+  .header, ion-row {
+    border-bottom: 1px solid #ccc;
+    font-weight: bold; /* Añade negrita al encabezado si lo deseas */
+  }
+  
+  ion-col {
+    padding: 10px;
+    text-align: center;
+  }
+
+
+.no-data-message {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #888; /* Puedes ajustar el color según tus preferencias */
+  }
+    

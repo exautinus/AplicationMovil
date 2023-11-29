@@ -1,0 +1,27 @@
+<app-header backButton="/main/profile" [title]="'Registro de Asistencia'"></app-header>
+
+
+<ion-content>
+    <ion-grid>
+      <ion-row class="header">
+        <ion-col>Alumno</ion-col>
+        <ion-col>Hora de llegada</ion-col>
+      </ion-row>
+  
+      <ng-container *ngIf="asistencia && asistencia.length > 0; else noDataPlaceholder">
+        <ion-row *ngFor="let asistenciaItem of asistencia">
+          <ion-col>{{ asistenciaItem.alumno }}</ion-col>
+          <ion-col>{{ asistenciaItem.horaLlegada }}</ion-col>
+        </ion-row>
+      </ng-container>
+  
+      <ng-template #noDataPlaceholder>
+        <ion-row>
+          <ion-col>
+            <div class="no-data-message">No hay datos disponibles.</div>
+          </ion-col>
+        </ion-row>
+      </ng-template>
+    </ion-grid>
+  </ion-content>
+  

@@ -1,0 +1,23 @@
+<!-- scan-history.component.html -->
+
+<ion-content>
+  <div *ngIf="asistencia && asistencia.length > 0">
+    <h2>{{ profesorInfo.nombre }}</h2>
+
+    <h3>Asistencias:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let asistenciaItem of asistencia">
+          <td>{{ asistenciaItem.fecha }}</td>
+          <td>{{ asistenciaItem.detalle }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ion-content>

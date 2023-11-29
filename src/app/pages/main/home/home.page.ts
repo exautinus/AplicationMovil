@@ -1,85 +1,77 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import {BarcodeScanner} from '@awesome-cordova-plugins/barcode-scanner/ngx'
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage {
+  scannedData: any;
 
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-
-  })
+  });
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-  
+
+  constructor(private barcodescanner: BarcodeScanner) {}
 
   ngOnInit() {
+    // Puedes realizar inicializaciones adicionales aquí si es necesario
   }
 
-  //====== Cerrar sesión ====== //
-  
-
-  signOut(){
+  // Función para cerrar sesión
+  signOut() {
     this.firebaseSvc.signOut();
   }
 
-  //====== BarCode Scanner ====== //
-  texto:string=''
-  constructor(private barcodescanner:BarcodeScanner) {}
+  // Función para escanear código QR
+  scan() {
+    this.barcodescanner.scan().then(async (barcodedata) => {
+      console.log('Scaneando...', barcodedata);
+      this.scannedData = barcodedata;
 
-  scan(){
-    this.barcodescanner.scan().then(barcodedata=>{
-      console.log("Scaneando...", barcodedata);
-      this.texto=(JSON.stringify(barcodedata));
-    }).catch(err=>{
-      console.log("ERROR AL ESCANEAR!!!!");
-    })
+      // Enviar información al servidor o realizar otras acciones según tus necesidades
+      this.sendAttendanceInfo();
 
+    }).catch((err) => {
+      console.log('ERROR AL ESCANEAR!!!!', err);
+    });
   }
 
-  async submit() {
-    if (this.form.valid) {
+  // Función para enviar información de asistencia al servidor
+  sendAttendanceInfo() {
+    // Obtener información del profesor y materia desde el almacenamiento local
+    const profesorInfo = this.utilsSvc.getFormLocalStorage('profesorInfo');
+    const materiaSeleccionada = profesorInfo ? profesorInfo.materias[0] : '';
 
-      const loading = await this.utilsSvc.loading();
-      await loading.present();
+    // Construir objeto studentInfo con información del alumno
+    const studentInfo = {
+      nombre: 'Nombre del Estudiante',
+      horaEscaneo: new Date().toLocaleTimeString(),
+      scannedData: this.scannedData,
+      nombreProfesor: profesorInfo ? profesorInfo.nombre : '',
+      materia: materiaSeleccionada,
+    };
 
-      this.firebaseSvc.sendRecoveryEmail(this.form.value.email).then(res => {
-
-        this.utilsSvc.presentToast({
-          message: 'Correo enviado con éxito',
-          duration: 1500,
-          color: 'primary',
-          position: 'middle',
-          icon: 'mail-outline'
-        });
-
-        this.utilsSvc.routerLink('/auth');
-        this.form.reset();
-
-      }).catch(error => {
-        console.log(error);
-
-        this.utilsSvc.presentToast({
-          message: error.message,
-          duration: 3000,
-          color: 'primary',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        })
-
-      }).finally(() => {
-        loading.dismiss();
-      })
-    }
+    // Enviar información al componente de historial
+    this.utilsSvc.saveInLocalStorage('studentInfo', studentInfo);
+    this.navigateToScanHistory();
   }
-  
+
+  // Función para manejar el envío del formulario
+  submit() {
+    // Aquí puedes agregar lógica adicional si es necesario
+  }
+
+  // Función para navegar a la página de historial
+  navigateToScanHistory() {
+    // Ajusta la ruta según la estructura de rutas de tu aplicación
+    this.utilsSvc.routerLink('/scan-history');
+  }
 }
