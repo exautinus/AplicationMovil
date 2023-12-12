@@ -1,5 +1,6 @@
+// En tu ver-asistencia.page.ts
 import { Component, OnInit } from '@angular/core';
-import { UtilsService } from 'src/app/services/utils.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ver-asistencia',
@@ -7,24 +8,39 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./ver-asistencia.page.scss'],
 })
 export class VerAsistenciaPage implements OnInit {
-  profesorInfo: any;
   asistencia: any;
 
-  constructor(private utilsSvc: UtilsService) {}
+  constructor(private activatedRoute: ActivatedRoute) {}
+
+  mostrarDatos() {
+    const params = this.activatedRoute.snapshot.params;
+    console.log('Params:', params);
+  
+    // Intenta acceder a 'state' directamente y verifica si es una cadena JSON válida
+    const state = params['state'];
+    if (state) {
+      try {
+        const parsedState = JSON.parse(state);
+        console.log('Parsed State:', parsedState);
+  
+        // Verifica si 'asistencia' está definido en 'parsedState'
+        if (parsedState && parsedState.asistencia) {
+          console.log('Asistencia:', parsedState.asistencia);
+  
+          // Asigna los datos a la variable 'asistencia'
+          this.asistencia = parsedState.asistencia;
+
+          // Imprime cada objeto en la consola
+          this.asistencia.forEach(item => console.log(item));
+        }
+      } catch (error) {
+        console.error('Error al analizar el estado:', error);
+      }
+    }
+  }
 
   ngOnInit() {
-    // Recupera los datos almacenados en UtilsService
-    this.asistencia = this.utilsSvc.getSharedData();
-    
-    // Muestra un mensaje en consola
-    console.log('Datos de asistencia:', this.asistencia);
-
-    // Verifica si hay datos o no
-    if (!this.asistencia) {
-      console.log('A la espera de un registro');
-    }
-
-    // También puedes recuperar otros datos si es necesario
-    // this.profesorInfo = ...
+    // Llama a la función mostrarDatos() en el ngOnInit
+    this.mostrarDatos();
   }
 }

@@ -4,6 +4,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile',
@@ -29,7 +30,8 @@ export class ProfilePage implements OnInit {
   constructor(
     private firebaseSvc: FirebaseService,
     private utilsSvc: UtilsService,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController, // Agrega NavController
   ) {}
 
   ngOnInit() {
@@ -51,13 +53,35 @@ export class ProfilePage implements OnInit {
 
   // Función para mostrar la imagen prediseñada del código QR asociado
   showPredefinedQRCode() {
+// Obtén la materia seleccionada
+const selectedMateria = this.form.controls.materia.value;
 
- // Obtén la materia seleccionada
- const selectedMateria = this.form.controls.materia.value;
+// Genera un nombre de alumno aleatorio
+const randomAlumno = this.generateRandomAlumno();
 
- // Asigna la ruta de la imagen prediseñada al código QR según la materia seleccionada
- this.predefinedQrCodeData = this.materiaImagenes[selectedMateria] || '';
+// Almacena la hora actual en la variable tiempo
+const tiempo = new Date().toLocaleTimeString();
 
+// Almacena los datos en las variables correspondientes
+this.profesorInfo = { alumno: randomAlumno, tiempo, materia: selectedMateria };
+
+console.log('datos almacenados:', this.profesorInfo);
+
+// Asigna la ruta de la imagen prediseñada al código QR según la materia seleccionada
+this.predefinedQrCodeData = this.materiaImagenes[selectedMateria] || '';
+
+
+
+  }
+
+  // Función para generar un nombre de alumno aleatorio
+  generateRandomAlumno(): string {
+    const possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomAlumno = '';
+    for (let i = 0; i < 6; i++) {
+      randomAlumno += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
+    }
+    return randomAlumno;
   }
 
   // Función para manejar el cambio de materia en la lista desplegable
@@ -70,7 +94,8 @@ export class ProfilePage implements OnInit {
   verRegistroAsistencia() {
     if (this.predefinedQrCodeData) {
       // Ajusta la ruta según la estructura de rutas de tu aplicación
-      this.router.navigate(['/verAsistencia']);
+      // Asegúrate de que 'profesorInfo' está disponible en la ruta y contiene los datos que necesitas
+      this.router.navigate(['/verAsistencia', { state: JSON.stringify(this.profesorInfo) }]);
     }
   }
 
