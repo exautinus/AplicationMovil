@@ -1,6 +1,4 @@
-<!-- Agrega este import al inicio del archivo si aún no lo tienes -->
-<!-- <app-header title="Sesión de Profesor"></app-header> -->
-
+<!-- En tu profile.page.html -->
 <app-header [title]="'Sesión de Profesor'"></app-header>
 
 <ion-content>
@@ -11,47 +9,37 @@
 
       <app-logo></app-logo>
 
-      <div style="margin-top: 60px;"></div>
+      <p class="ion-text-center">Selecciona una materia y genera tu codigo QR para que tus alumnos se registren</p>
 
-      <p class="ion-text-center">Genera tu código QR para que tus alumnos se registren</p>
 
-      <div style="margin-top: 40px;"></div>
-
-      <!-- Lista desplegable de materias -->
-
-      <ion-item class="custom-input-box"
-        [class.invalid]="form.controls.materia.invalid && form.controls.materia.touched">
-        <ion-select formControlName="materia" class="custom-select" placeholder="Seleccione una materia"
-          interface="popover">
-          <ion-select-option value="Matemáticas">Matemáticas</ion-select-option>
+      <ion-item class="custom-input-box" [class.invalid]="form.controls.materia.invalid && form.controls.materia.touched">
+        <ion-label>Materia</ion-label>
+        <ion-select formControlName="materia" class="custom-select" placeholder="Seleccione una materia" (ionChange)="onMateriaChange()">
           <ion-select-option value="Lenguaje">Lenguaje</ion-select-option>
+          <ion-select-option value="Matematica">Matemáticas</ion-select-option>
           <ion-select-option value="Historia">Historia</ion-select-option>
-          <!-- Agrega más opciones según las materias que desees -->
         </ion-select>
       </ion-item>
 
-      <div style="margin-top: 20px;"></div>
+      <!-- Botón para mostrar la imagen prediseñada del código QR -->
+      <ion-button (click)="showPredefinedQRCode()" class="ion-margin">
+        Mostrar QR Asociado
+      </ion-button>
 
-      <!-- Botón para generar el código QR -->
-      <ion-button made="ios" class="submit" type="button" (click)="generateQRCode()"
-        [disabled]="isGeneratingQR || form.controls.materia.invalid">
-        Genera tu Código QR</ion-button>
+      <!-- Botón para ver el registro de asistencia (deshabilitado si no hay imagen) -->
+      <ion-button class="ver-asistencia" (click)="verRegistroAsistencia()" [disabled]="!predefinedQrCodeData">
+        Ver Registro de Asistencia
+      </ion-button>
 
-      <!-- Código QR generado -->
-      <div *ngIf="qrCodeData">
-        <img [src]="qrCodeData" alt="Código QR">
-
-        <!-- Botón para ver el registro de asistencia -->
-        <ion-button class="ver-asistencia" (click)="verRegistroAsistencia()">
-          Ver Registro de Asistencia
-        </ion-button>
-
+      <!-- Imagen prediseñada del código QR -->
+      <div *ngIf="predefinedQrCodeData">
+        <img [src]="predefinedQrCodeData" alt="Código QR Prediseñado">
       </div>
 
-      <div style="margin-top: 30px;"></div>
 
+      
 
-
+      <!-- Botón para cerrar la sesión del profesor -->
       <ion-button (click)="signOut()" class="ion-margin">
         Cerrar Sesión
         <ion-icon slot="start" name="person"></ion-icon>
